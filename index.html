@@ -1,0 +1,1423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MINDJE KAYUMBA PATIENT, PhD | Physical Geography | GIS Expert</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Merriweather:wght@300;400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #2d7d59;   /* Forest green */
+      --secondary: #1a6b8a; /* Ocean blue */
+      --accent: #c7913a;    /* Earth gold */
+      --dark: #0d1f1a;      /* Deep forest */
+      --darker: #06100c;    /* Near black */
+      --light: #f0f7f4;     /* Soft off-white */
+      --gray: #6b8f7e;      /* Muted sage */
+      --dark-gray: #1a3328; /* Dark sage */
+      --code-green: #52be80;
+      --code-blue: #2980b9;
+      --code-purple: #8e6b2e;
+      --code-yellow: #c7913a;
+      --code-red: #e74c3c;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Space Grotesk', sans-serif;
+      color: var(--light);
+      line-height: 1.6;
+      overflow-x: hidden;
+      position: relative;
+      background-color: var(--darker);
+      padding-top: 80px; /* Space for fixed navbar */
+    }
+    
+    /* Terrain Background Effect */
+    .code-background {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      background:
+        radial-gradient(ellipse at 10% 30%, rgba(45, 125, 89, 0.14) 0%, transparent 52%),
+        radial-gradient(ellipse at 88% 68%, rgba(26, 107, 138, 0.12) 0%, transparent 48%),
+        radial-gradient(ellipse at 52% 88%, rgba(45, 125, 89, 0.09) 0%, transparent 42%),
+        radial-gradient(ellipse at 72% 12%, rgba(199, 145, 58, 0.07) 0%, transparent 36%);
+    }
+    
+    .terminal-cursor {
+      display: inline-block;
+      width: 10px;
+      height: 20px;
+      background-color: var(--code-green);
+      animation: blink 1s step-end infinite;
+      vertical-align: middle;
+      margin-left: 2px;
+    }
+    
+    @keyframes blink {
+      from, to { opacity: 1; }
+      50% { opacity: 0; }
+    }
+    
+    ::selection {
+      background: var(--accent);
+      color: var(--dark);
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      position: relative;
+    }
+    
+    /* Navigation */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: rgba(13, 31, 26, 0.96);
+      backdrop-filter: blur(10px);
+      z-index: 1000;
+      border-bottom: 1px solid rgba(45, 125, 89, 0.25);
+      box-shadow: 0 2px 20px rgba(6, 16, 12, 0.8);
+    }
+    
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--light);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+    }
+    
+    .logo span {
+      color: var(--accent);
+    }
+    
+    .nav-links {
+      display: flex;
+      list-style: none;
+      gap: 2rem;
+    }
+    
+    .nav-links a {
+      color: var(--gray);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      position: relative;
+      padding: 0.5rem 0;
+    }
+    
+    .nav-links a:hover {
+      color: var(--light);
+    }
+    
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      transition: width 0.3s ease;
+    }
+    
+    .nav-links a:hover::after {
+      width: 100%;
+    }
+    
+    .mobile-menu-btn {
+      display: none;
+      background: none;
+      border: none;
+      color: var(--light);
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+    
+    /* Header Styles */
+    header {
+      text-align: center;
+      padding: 5rem 0 3rem;
+      position: relative;
+    }
+    
+    .profile-container {
+      width: 220px;
+      height: 220px;
+      margin: 0 auto 2rem;
+      border-radius: 50%;
+      border: 4px solid var(--primary);
+      padding: 6px;
+      position: relative;
+      box-shadow: 0 0 0 0 rgba(45, 125, 89, 0.4);
+      animation: pulse 4s infinite;
+      transition: all 0.5s ease;
+      background: rgba(13, 31, 26, 0.7);
+      backdrop-filter: blur(5px);
+    }
+    
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(45, 125, 89, 0.4); }
+      70% { box-shadow: 0 0 0 15px rgba(45, 125, 89, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(45, 125, 89, 0); }
+    }
+    
+    .profile-img {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+      object-position: top center;
+      filter: contrast(110%) saturate(90%);
+      transition: all 0.4s ease;
+      border: 2px solid rgba(199, 145, 58, 0.3);
+    }
+    
+    .profile-img:hover {
+      filter: contrast(120%) saturate(120%);
+      transform: scale(1.05);
+    }
+    
+    h1 {
+      font-size: 3.2rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(45deg, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      opacity: 0;
+      animation: fadeIn 1s ease forwards 0.3s;
+      letter-spacing: -0.5px;
+    }
+    
+    .title {
+      font-size: 1.3rem;
+      color: var(--gray);
+      margin-bottom: 2rem;
+      opacity: 0;
+      animation: fadeIn 1s ease forwards 0.6s;
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
+      line-height: 1.8;
+    }
+    
+    .title span {
+      color: var(--accent);
+      font-weight: 500;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* Section Styles */
+    section {
+      margin-bottom: 4rem;
+      opacity: 0;
+      animation: fadeIn 1s ease forwards;
+      animation-delay: calc(var(--order) * 0.15s + 0.9s);
+      scroll-margin-top: 100px; /* For anchor links to account for fixed header */
+    }
+    
+    h2 {
+      font-size: 2rem;
+      font-weight: 600;
+      margin-bottom: 2rem;
+      color: transparent;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      -webkit-background-clip: text;
+      background-clip: text;
+      position: relative;
+      display: inline-block;
+      letter-spacing: -0.5px;
+    }
+    
+    h2::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 0;
+      width: 60px;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      border-radius: 2px;
+    }
+    
+    /* Card Styles */
+    .card {
+      background: rgba(13, 31, 26, 0.75);
+      border: 1px solid rgba(45, 125, 89, 0.15);
+      border-radius: 16px;
+      padding: 2.5rem;
+      margin-bottom: 2.5rem;
+      backdrop-filter: blur(8px);
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+      box-shadow: 0 10px 30px -15px rgba(6, 16, 12, 0.7);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(45, 125, 89, 0.1),
+        transparent
+      );
+      transition: 0.5s;
+    }
+    
+    .card:hover::before {
+      left: 100%;
+    }
+    
+    .card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 50px -15px rgba(45, 125, 89, 0.3);
+      border-color: rgba(45, 125, 89, 0.3);
+    }
+    
+    /* List Styles */
+    .skills-list {
+      list-style: none;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.2rem;
+    }
+    
+    .skills-list li {
+      padding: 1rem 1.2rem;
+      background: rgba(26, 51, 40, 0.5);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      transition: all 0.3s ease;
+      border-left: 3px solid transparent;
+      font-family: 'Space Grotesk', sans-serif;
+    }
+    
+    .skills-list li:hover {
+      background: rgba(45, 125, 89, 0.15);
+      transform: translateX(8px);
+      border-left: 3px solid var(--accent);
+    }
+    
+    .skills-list li::before {
+      content: '◆';
+      color: var(--primary);
+      margin-right: 1rem;
+      font-size: 0.75rem;
+    }
+    
+    /* Projects Styles */
+    .projects-list {
+      list-style: none;
+    }
+    
+    .project-item {
+      padding: 2rem 0;
+      border-bottom: 1px solid rgba(45, 125, 89, 0.18);
+      transition: all 0.3s ease;
+    }
+    
+    .project-item:last-child {
+      border-bottom: none;
+    }
+    
+    .project-item:hover {
+      border-bottom-color: var(--primary);
+    }
+    
+    .project-title {
+      font-size: 1.4rem;
+      font-weight: 600;
+      margin-bottom: 0.8rem;
+      color: var(--light);
+      display: flex;
+      align-items: center;
+    }
+    
+    .project-title::before {
+      content: '»';
+      color: var(--accent);
+      margin-right: 0.8rem;
+      font-size: 1.5rem;
+      transition: all 0.3s ease;
+    }
+    
+    .project-item:hover .project-title::before {
+      transform: translateX(5px);
+    }
+    
+    .project-desc {
+      color: var(--gray);
+      margin-bottom: 1.2rem;
+      line-height: 1.8;
+      padding-left: 2rem;
+    }
+    
+    .tech-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.7rem;
+      padding-left: 2rem;
+    }
+    
+    .tech-tag {
+      background: rgba(45, 125, 89, 0.12);
+      color: var(--secondary);
+      padding: 0.4rem 1rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      border: 1px solid rgba(45, 125, 89, 0.28);
+      font-family: 'Space Grotesk', sans-serif;
+    }
+    
+    .tech-tag:hover {
+      background: rgba(45, 125, 89, 0.25);
+      transform: translateY(-2px);
+    }
+    
+    /* Data Block Styles */
+    .code-block {
+      background: rgba(13, 31, 26, 0.9);
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin: 1.5rem 0;
+      overflow-x: auto;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.9rem;
+      border-left: 4px solid var(--accent);
+    }
+    
+    .code-keyword {
+      color: var(--code-purple);
+    }
+    
+    .code-type {
+      color: var(--code-blue);
+    }
+    
+    .code-string {
+      color: var(--code-green);
+    }
+    
+    .code-comment {
+      color: var(--gray);
+      font-style: italic;
+    }
+    
+    .code-number {
+      color: var(--code-yellow);
+    }
+    
+    /* Project Link Styles */
+    .project-link {
+      display: inline-flex;
+      align-items: center;
+      margin-left: 2rem;
+      color: var(--accent);
+      text-decoration: none;
+      transition: all 0.3s ease;
+      font-size: 0.9rem;
+    }
+    
+    .project-link:hover {
+      color: var(--primary);
+      transform: translateX(5px);
+    }
+    
+    .project-link i {
+      margin-right: 0.5rem;
+    }
+    
+    /* Education Styles */
+    .education-item {
+      padding: 1.5rem 0;
+      border-bottom: 1px solid rgba(45, 125, 89, 0.18);
+    }
+    
+    .education-item:last-child {
+      border-bottom: none;
+    }
+    
+    .education-degree {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: var(--light);
+      margin-bottom: 0.5rem;
+    }
+    
+    .education-institution {
+      font-size: 1.1rem;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+    }
+    
+    .education-period {
+      color: var(--gray);
+      font-style: italic;
+      margin-bottom: 0.5rem;
+    }
+    
+    .education-desc {
+      color: var(--gray);
+      line-height: 1.7;
+      padding-left: 1rem;
+    }
+    
+    /* CV Download Button */
+    .cv-download {
+      display: inline-block;
+      background: linear-gradient(45deg, var(--primary), var(--secondary));
+      color: white;
+      padding: 0.8rem 1.8rem;
+      border-radius: 30px;
+      text-decoration: none;
+      font-weight: 500;
+      margin-top: 1rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(45, 125, 89, 0.3);
+    }
+    
+    .cv-download:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(45, 125, 89, 0.45);
+    }
+    
+    .cv-download i {
+      margin-right: 0.5rem;
+    }
+    
+    /* Contact Styles */
+    .social-links {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+    
+    .social-link {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(26, 51, 40, 0.7);
+      color: var(--gray);
+      font-size: 1.8rem;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(45, 125, 89, 0.25);
+    }
+    
+    .social-link::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(45deg, transparent, rgba(45, 125, 89, 0.15), transparent);
+      transition: all 0.6s ease;
+    }
+    
+    .social-link:hover {
+      background: var(--dark-gray);
+      color: var(--accent);
+      transform: translateY(-5px) scale(1.1);
+      box-shadow: 0 10px 20px -5px rgba(199, 145, 58, 0.25);
+    }
+    
+    .social-link:hover::before {
+      left: 100%;
+    }
+    
+    /* Research Profile Card */
+    .research-card {
+      max-width: 820px;
+      margin: 2rem auto;
+      background: rgba(13, 31, 26, 0.78);
+      border-radius: 14px;
+      padding: 1.8rem 2.5rem;
+      border: 1px solid rgba(45, 125, 89, 0.35);
+      backdrop-filter: blur(8px);
+    }
+    
+    .research-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      padding: 0.9rem 0;
+      border-bottom: 1px solid rgba(45, 125, 89, 0.12);
+      opacity: 0;
+      animation: fadeIn 0.6s ease forwards;
+      animation-delay: calc(var(--row-index) * 0.2s + 0.8s);
+    }
+    
+    .research-row:last-child {
+      border-bottom: none;
+    }
+    
+    .research-label {
+      min-width: 185px;
+      color: var(--accent);
+      font-weight: 600;
+      font-size: 0.88rem;
+      letter-spacing: 0.4px;
+      padding-top: 0.15rem;
+      display: flex;
+      align-items: center;
+    }
+    
+    .research-label i {
+      margin-right: 0.6rem;
+      color: var(--primary);
+      font-size: 1rem;
+    }
+    
+    .research-value {
+      color: var(--light);
+      font-size: 0.95rem;
+      line-height: 1.6;
+      opacity: 0.88;
+    }
+    
+    /* Testimonials */
+    .testimonials-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+    }
+    
+    .testimonial-card {
+      background: rgba(13, 31, 26, 0.75);
+      border-radius: 16px;
+      padding: 2rem;
+      border: 1px solid rgba(45, 125, 89, 0.15);
+      position: relative;
+      transition: all 0.3s ease;
+    }
+    
+    .testimonial-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px -10px rgba(45, 125, 89, 0.25);
+    }
+    
+    .testimonial-text {
+      font-style: italic;
+      color: var(--gray);
+      margin-bottom: 1.5rem;
+      line-height: 1.8;
+      position: relative;
+    }
+    
+    .testimonial-text::before,
+    .testimonial-text::after {
+      content: '"';
+      color: var(--accent);
+      font-size: 1.5rem;
+      line-height: 0;
+    }
+    
+    .testimonial-text::before {
+      vertical-align: top;
+      margin-right: 0.3rem;
+    }
+    
+    .testimonial-text::after {
+      vertical-align: bottom;
+      margin-left: 0.3rem;
+    }
+    
+    .testimonial-author {
+      display: flex;
+      align-items: center;
+    }
+    
+    .testimonial-author-img {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-right: 1rem;
+      border: 2px solid var(--accent);
+    }
+    
+    .testimonial-author-info {
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .testimonial-author-name {
+      font-weight: 600;
+      color: var(--light);
+    }
+    
+    .testimonial-author-title {
+      font-size: 0.9rem;
+      color: var(--gray);
+    }
+    
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 4rem 0 3rem;
+      color: var(--gray);
+      font-size: 0.9rem;
+      position: relative;
+    }
+    
+    footer::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 200px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--primary), transparent);
+    }
+    
+    footer p {
+      margin-bottom: 0.5rem;
+    }
+    
+    .footer-accent {
+      color: var(--accent);
+      font-weight: 500;
+    }
+    
+    /* Back to Top Button */
+    .back-to-top {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: linear-gradient(45deg, var(--primary), var(--secondary));
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      cursor: pointer;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+      z-index: 999;
+      box-shadow: 0 5px 15px rgba(45, 125, 89, 0.4);
+    }
+    
+    .back-to-top.visible {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    .back-to-top:hover {
+      transform: translateY(-5px);
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      body {
+        padding-top: 70px;
+      }
+      
+      h1 {
+        font-size: 2.4rem;
+      }
+      
+      .title {
+        font-size: 1.1rem;
+      }
+      
+      .skills-list {
+        grid-template-columns: 1fr;
+      }
+      
+      .container {
+        padding: 0 1.5rem;
+      }
+      
+      .card {
+        padding: 1.8rem;
+      }
+      
+      h2 {
+        font-size: 1.8rem;
+      }
+      
+      .code-background {
+        opacity: 0.05;
+      }
+      
+      .nav-links {
+        position: fixed;
+        top: 70px;
+        left: 0;
+        width: 100%;
+        background: rgba(13, 31, 26, 0.96);
+        backdrop-filter: blur(10px);
+        flex-direction: column;
+        align-items: center;
+        padding: 2rem 0;
+        gap: 1.5rem;
+        transform: translateY(-150%);
+        transition: transform 0.4s ease;
+        z-index: 999;
+      }
+      
+      .nav-links.active {
+        transform: translateY(0);
+      }
+      
+      .mobile-menu-btn {
+        display: block;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- IDE Background -->
+  <div class="code-background"></div>
+  
+  <!-- Navigation -->
+  <nav>
+    <div class="nav-container">
+      <a href="#" class="logo">Patient<span>.</span></a>
+      <button class="mobile-menu-btn" id="mobileMenuBtn">
+        <i class="fas fa-bars"></i>
+      </button>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#profile">Profile</a></li>
+        <li><a href="#education">Education</a></li>
+        <li><a href="#skills">Skills</a></li>
+        <li><a href="#projects">Projects</a></li>
+        <li><a href="#experience">Experience</a></li>
+        <li><a href="#awards">Awards</a></li>
+        <li><a href="#training">Training</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+  
+  <div class="container">
+    <header>
+      <div class="profile-container">
+        <img src="profile.jpeg" alt="MINDJE KAYUMBA PATIENT" class="profile-img">
+      </div>
+      <h1>MINDJE KAYUMBA PATIENT, PhD</h1>
+      <p class="title">
+        <span>PhD in Physical Geography</span> | GIS & Remote Sensing Expert |
+        Environmental Sustainability Researcher | Assistant Lecturer
+      </p>
+
+      <!-- Research Profile Card -->
+      <div class="research-card">
+        <div class="research-row" style="--row-index: 0;">
+          <span class="research-label"><i class="fas fa-graduation-cap"></i>Qualification</span>
+          <span class="research-value">PhD in Physical Geography — University of Chinese Academy of Sciences (2022–2026)</span>
+        </div>
+        <div class="research-row" style="--row-index: 1;">
+          <span class="research-label"><i class="fas fa-leaf"></i>Research Focus</span>
+          <span class="research-value">Terrestrial Ecosystem Health &amp; Sustainability in Central Asia</span>
+        </div>
+        <div class="research-row" style="--row-index: 2;">
+          <span class="research-label"><i class="fas fa-map-marked-alt"></i>Expertise</span>
+          <span class="research-value">GIS &nbsp;·&nbsp; Remote Sensing &nbsp;·&nbsp; Land Change Detection &nbsp;·&nbsp; Environmental Modelling &nbsp;·&nbsp; Spatial Analysis</span>
+        </div>
+        <div class="research-row" style="--row-index: 3;">
+          <span class="research-label"><i class="fas fa-globe-africa"></i>Location</span>
+          <span class="research-value">Kigali, Rwanda &nbsp;·&nbsp; Central Asia (Field Research)</span>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section id="profile" style="--order: 1;">
+        <h2>Professional Summary</h2>
+        <div class="card">
+          <p style="margin-bottom: 1.5rem; line-height: 1.9;">
+            A dynamic, result-oriented, and highly productive PhD graduate in Physical Geography with expertise in GIS, spatial analysis, and land-change sustainability. Possessing advanced research and analytical skills, I am a fast learner and an open-minded team player passionate about applying innovative, data-driven approaches to address complex environmental and sustainability challenges.
+          </p>
+          <p style="margin-bottom: 1.5rem; line-height: 1.9; color: var(--accent); font-style: italic;">
+            Interests: Geospatial Analysis for Sustainable Development | Climate–Land Interactions | Environmental Risk and Vulnerability Assessment | Sustainable Land Management | Spatial Decision Support Systems | Earth Observation for Policy and Planning
+          </p>
+
+          <!-- Personal Details -->
+          <div style="margin-top: 2rem;">
+            <h3 style="color: var(--accent); margin-bottom: 1.5rem; font-weight: 500; font-size: 1.2rem;">
+              <i class="fas fa-user" style="margin-right: 0.5rem;"></i>Personal Details
+            </h3>
+            <ul class="skills-list" style="grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));">
+              <li>Date of Birth: 05th January 1997</li>
+              <li>Place of Birth: Kigali, Rwanda</li>
+              <li>Nationality: Rwandese</li>
+              <li>Address: Kigarama-Kicukiro, Kigali, Rwanda</li>
+            </ul>
+          </div>
+
+          <!-- Languages -->
+          <div style="margin-top: 2rem;">
+            <h3 style="color: var(--accent); margin-bottom: 1.5rem; font-weight: 500; font-size: 1.2rem;">
+              <i class="fas fa-language" style="margin-right: 0.5rem;"></i>Languages
+            </h3>
+            <ul class="skills-list" style="grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));">
+              <li>English: Very Fluent</li>
+              <li>French: Very Fluent</li>
+              <li>Chinese Mandarin: Good</li>
+              <li>Swahili: Very Fluent</li>
+              <li>Kinyarwanda: Very Fluent</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section id="education" style="--order: 2;">
+        <h2>Education</h2>
+        <div class="card">
+          <div class="education-item">
+            <h3 class="education-degree">PhD Candidate in Physical Geography</h3>
+            <div class="education-institution">University of Chinese Academy of Sciences — Xinjiang Institute of Ecology and Geography</div>
+            <div class="education-period">2022 – 2026</div>
+            <p class="education-desc">Thesis: "Terrestrial ecosystem health and sustainability in Central Asia"</p>
+          </div>
+          <div class="education-item">
+            <h3 class="education-degree">Master's Degree in Physical Geography</h3>
+            <div class="education-institution">University of Chinese Academy of Sciences — Xinjiang Institute of Ecology and Geography</div>
+            <div class="education-period">2019 – 2022</div>
+          </div>
+          <div class="education-item">
+            <h3 class="education-degree">Bachelor of Science in Environmental Management and Conservation</h3>
+            <div class="education-institution">University of Lay Adventist of Kigali (UNILAK)</div>
+            <div class="education-period">2015 – 2018</div>
+            <p class="education-desc">First Class Honours</p>
+          </div>
+          <div class="education-item">
+            <h3 class="education-degree">Advanced Level Certificate (A2) — Biology &amp; Chemistry</h3>
+            <div class="education-institution">Groupe Scolaire Consulaire Congolais, Kigali, Rwanda</div>
+            <div class="education-period">2011 – 2014</div>
+          </div>
+          <a href="#" class="cv-download" style="margin-top: 1.5rem; display: inline-block;">
+            <i class="fas fa-download"></i> Download My CV
+          </a>
+        </div>
+      </section>
+
+      <section id="skills" style="--order: 3;">
+        <h2>Skills &amp; Competences</h2>
+        <div class="card">
+          <h3 style="color: var(--accent); margin-bottom: 1.5rem; font-weight: 500; font-size: 1.2rem;">
+            <i class="fas fa-flask" style="margin-right: 0.5rem;"></i>Technical &amp; Laboratory Skills
+          </h3>
+          <ul class="skills-list">
+            <li>Spatial Data Analysis</li>
+            <li>Remote Sensing Image Processing</li>
+            <li>Land Change Detection</li>
+            <li>Environmental Modelling</li>
+            <li>Geospatial Data Interpretation</li>
+            <li>Data Collection and Digitization</li>
+          </ul>
+
+          <h3 style="color: var(--accent); margin-top: 2rem; margin-bottom: 1.5rem; font-weight: 500; font-size: 1.2rem;">
+            <i class="fas fa-user-tie" style="margin-right: 0.5rem;"></i>Personal Strengths
+          </h3>
+          <ul class="skills-list">
+            <li>Excellent Communication Skills</li>
+            <li>Leadership &amp; Team Collaboration</li>
+            <li>Strong Analytical Thinking</li>
+            <li>Organizational Skills</li>
+            <li>Academic Writing</li>
+            <li>Multicultural Adaptability</li>
+          </ul>
+
+          <h3 style="color: var(--accent); margin-top: 2rem; margin-bottom: 1.5rem; font-weight: 500; font-size: 1.2rem;">
+            <i class="fas fa-laptop-code" style="margin-right: 0.5rem;"></i>Software &amp; Tools
+          </h3>
+          <ul class="skills-list">
+            <li>R (RStudio)</li>
+            <li>ArcGIS</li>
+            <li>QGIS</li>
+            <li>TerrSet</li>
+            <li>Google Earth Engine</li>
+            <li>Microsoft Office Suite</li>
+            <li>Photoshop</li>
+            <li>AI Tools</li>
+          </ul>
+        </div>
+      </section>
+
+      <section id="projects" style="--order: 4;">
+        <h2>Research Projects</h2>
+        <div class="card">
+          <ul class="projects-list">
+            <li class="project-item">
+              <h3 class="project-title">Green Investment Mobilization — Volcanoes National Park Expansion</h3>
+              <p class="project-desc">
+                Green Investment Mobilization to Support Rwanda's Planned Expansion of the Volcanoes National Park (VNP), contributing to conservation finance, resource mobilization, and spatial GIS monitoring.
+              </p>
+              <div class="tech-tags">
+                <span class="tech-tag">Conservation Finance</span>
+                <span class="tech-tag">GIS Monitoring</span>
+                <span class="tech-tag">Rwanda</span>
+                <span class="tech-tag">GGGI</span>
+              </div>
+            </li>
+            <li class="project-item">
+              <h3 class="project-title">Terrestrial Ecosystem Health in Central Asia (PhD Thesis)</h3>
+              <p class="project-desc">
+                Strategic Priority Research Program of the Chinese Academy of Sciences (XDA19030204) — Investigating ecosystem health, land-change dynamics, and sustainability across Central Asia using geospatial analysis and remote sensing.
+              </p>
+              <div class="tech-tags">
+                <span class="tech-tag">Remote Sensing</span>
+                <span class="tech-tag">Land Change Detection</span>
+                <span class="tech-tag">Ecosystem Health</span>
+                <span class="tech-tag">Central Asia</span>
+              </div>
+            </li>
+            <li class="project-item">
+              <h3 class="project-title">Key Research Program — Chinese Academy of Sciences (ZDRWZS-2019-3)</h3>
+              <p class="project-desc">
+                Participation in the Key Research Program of the Chinese Academy of Sciences on ecology and geography in Xinjiang, contributing to spatial analysis and environmental assessments.
+              </p>
+              <div class="tech-tags">
+                <span class="tech-tag">Environmental Assessment</span>
+                <span class="tech-tag">Spatial Analysis</span>
+                <span class="tech-tag">CAS</span>
+              </div>
+            </li>
+            <li class="project-item">
+              <h3 class="project-title">National Natural Science Foundation of China (U1903208, 41630859)</h3>
+              <p class="project-desc">
+                Research contributions under the National Natural Science Foundation of China, focusing on ecological and geographical dynamics in arid and semi-arid regions.
+              </p>
+              <div class="tech-tags">
+                <span class="tech-tag">Arid Regions</span>
+                <span class="tech-tag">Ecology</span>
+                <span class="tech-tag">NSFC</span>
+              </div>
+            </li>
+            <li class="project-item">
+              <h3 class="project-title">National Key Research and Development Program (2019YFA0606902)</h3>
+              <p class="project-desc">
+                Contribution to China's National Key Research and Development Program focused on ecosystem dynamics and sustainable land management strategies.
+              </p>
+              <div class="tech-tags">
+                <span class="tech-tag">Sustainable Land Management</span>
+                <span class="tech-tag">Ecosystem Dynamics</span>
+                <span class="tech-tag">China</span>
+              </div>
+            </li>
+            <li class="project-item">
+              <h3 class="project-title">Youth Innovation Promotion — Chinese Academy of Sciences (No. 2019431)</h3>
+              <p class="project-desc">
+                Youth Innovation Promotion Association of the Chinese Academy of Sciences grant supporting innovative research in ecology and geospatial sciences.
+              </p>
+              <div class="tech-tags">
+                <span class="tech-tag">Innovation</span>
+                <span class="tech-tag">Geospatial Science</span>
+                <span class="tech-tag">CAS</span>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <section id="experience" style="--order: 5;">
+        <h2>Professional Experience</h2>
+        <div class="card">
+          <ul class="projects-list">
+            <li class="project-item">
+              <h3 class="project-title">Assistant Lecturer — University of Lay Adventists of Kigali (UNILAK)</h3>
+              <p class="project-desc">
+                <strong>February 2023 – Present</strong><br>
+                Teaching Environmental Studies and related courses. Supervising undergraduate research projects and supporting curriculum development and academic mentorship.
+              </p>
+              <div class="tech-tags">
+                <span class="tech-tag">Teaching</span>
+                <span class="tech-tag">Research Supervision</span>
+                <span class="tech-tag">Curriculum Development</span>
+              </div>
+            </li>
+            <li class="project-item">
+              <h3 class="project-title">Apprentice — Global Green Growth Institute (GGGI), Rwanda</h3>
+              <p class="project-desc">
+                <strong>June – December 2022</strong><br>
+                Contributed to green investment mobilization initiatives. Supported project and resource mobilization for the expansion of Volcanoes National Park. Organized a Capacity Building Workshop on market-based mechanisms under Article 6 of the Paris Agreement. Shared knowledge on GIS utility in park monitoring.
+              </p>
+              <div class="tech-tags">
+                <span class="tech-tag">Green Finance</span>
+                <span class="tech-tag">GIS Monitoring</span>
+                <span class="tech-tag">Conservation</span>
+                <span class="tech-tag">Paris Agreement</span>
+              </div>
+            </li>
+            <li class="project-item">
+              <h3 class="project-title">Assistant Lecturer — University of Rwanda</h3>
+              <p class="project-desc">
+                <strong>May – June 2022</strong><br>
+                Delivered lectures on Applications of GIS and Remote Sensing in Agroforestry and Nature Conservation. Assisted in practical GIS and spatial data analysis training.
+              </p>
+              <div class="tech-tags">
+                <span class="tech-tag">GIS &amp; Remote Sensing</span>
+                <span class="tech-tag">Agroforestry</span>
+                <span class="tech-tag">Nature Conservation</span>
+              </div>
+            </li>
+          </ul>
+
+          <!-- Leadership & Service -->
+          <div style="margin-top: 2rem;">
+            <h3 style="color: var(--accent); margin-bottom: 1.5rem; font-weight: 500; font-size: 1.2rem;">
+              <i class="fas fa-users" style="margin-right: 0.5rem;"></i>Leadership &amp; Service
+            </h3>
+            <ul class="skills-list">
+              <li>2018–2019: Advisor, Conservation for Life Club — UNILAK</li>
+              <li>2016–2018: President, Conservation for Life Club — UNILAK</li>
+              <li>2015–2017: Vice President, Aspire Debate Club (UNILAK-ADC)</li>
+            </ul>
+          </div>
+
+          <!-- Community Outreach -->
+          <div style="margin-top: 2rem;">
+            <h3 style="color: var(--accent); margin-bottom: 1.5rem; font-weight: 500; font-size: 1.2rem;">
+              <i class="fas fa-hands-helping" style="margin-right: 0.5rem;"></i>Community Outreach
+            </h3>
+            <ul class="skills-list">
+              <li>2019 — Inspiring youths in Gikondo sector, Kigali via Global Community Partners</li>
+              <li>2018 — Environmental awareness among students at Kagugu Primary School (ADRRES)</li>
+              <li>2018 — Tree plantation campaign through Conservation for Life Club at UNILAK</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section id="awards" style="--order: 6;">
+        <h2>Awards &amp; Recognitions</h2>
+        <div class="card">
+          <ul class="projects-list">
+            <li class="project-item">
+              <h3 class="project-title">Excellent International Student (2022)</h3>
+              <p class="project-desc">University of Chinese Academy of Sciences, Xinjiang Institute of Ecology and Geography, China</p>
+            </li>
+            <li class="project-item">
+              <h3 class="project-title">Best Student in Environmental Studies Faculty — First Class (2018)</h3>
+              <p class="project-desc">University of Lay Adventists of Kigali (UNILAK), Rwanda</p>
+            </li>
+            <li class="project-item">
+              <h3 class="project-title">3rd Best English Debater (2018)</h3>
+              <p class="project-desc">UNILAK Inter-Department Debate Championship, Rwanda</p>
+            </li>
+            <li class="project-item">
+              <h3 class="project-title">Recognition for Youth Conservation Innovation Poster (2018)</h3>
+              <p class="project-desc">Conservation on Conservation Conference, Rwanda</p>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <section id="training" style="--order: 7;">
+        <h2>Training &amp; Conferences</h2>
+        <div class="card">
+          <ul class="projects-list">
+            <li class="project-item">
+              <h3 class="project-title">Research Symposium on Soil Science — Rwanda (2022)</h3>
+              <p class="project-desc">
+                <strong>Presentation Topic:</strong> "Modelling the near-surface energies and water vapor fluxes across an agroecosystem"<br>
+                Crossing Boundaries and Sustainable Agriculture symposium, Rwanda.
+              </p>
+              <div class="tech-tags">
+                <span class="tech-tag">Soil Science</span>
+                <span class="tech-tag">Agroecosystem</span>
+                <span class="tech-tag">Modelling</span>
+              </div>
+            </li>
+            <li class="project-item">
+              <h3 class="project-title">Annual Meeting — Xinjiang State Key Laboratory of Desert and Oasis Ecology (2020)</h3>
+              <p class="project-desc">
+                <strong>Presentation Topic:</strong> "Spatial ecological risk assessment of Bayanbulak wetland in Northwestern China"
+              </p>
+              <div class="tech-tags">
+                <span class="tech-tag">Ecological Risk</span>
+                <span class="tech-tag">Wetland</span>
+                <span class="tech-tag">China</span>
+              </div>
+            </li>
+            <li class="project-item">
+              <h3 class="project-title">3rd International Conference on Environment, Energy, Disaster &amp; Development (June 2016)</h3>
+              <p class="project-desc">
+                Theme: "Future we want — sustainability for all" | Place: Kigali, Rwanda
+              </p>
+              <div class="tech-tags">
+                <span class="tech-tag">Environment</span>
+                <span class="tech-tag">Sustainability</span>
+                <span class="tech-tag">Kigali</span>
+              </div>
+            </li>
+            <li class="project-item">
+              <h3 class="project-title">LAFREC Training Workshop on Forest Restoration &amp; Conservation (March 2018)</h3>
+              <p class="project-desc">
+                Theme: "Enhancing environmental services, climate resilience and sustainable lives in the Gishwati-Mukura Landscape"<br>
+                Organized by Rwanda Environmental Management Authority (REMA).
+              </p>
+              <div class="tech-tags">
+                <span class="tech-tag">Forest Restoration</span>
+                <span class="tech-tag">Climate Resilience</span>
+                <span class="tech-tag">REMA</span>
+              </div>
+            </li>
+            <li class="project-item">
+              <h3 class="project-title">KWITA IZINA 3rd Conservation Forum (August 2017)</h3>
+              <p class="project-desc">
+                Theme: "Conservation in the Face of Climate Change — a Collective Responsibility"<br>
+                Place: KCVE (Kigali Conference and Exhibition Village)
+              </p>
+              <div class="tech-tags">
+                <span class="tech-tag">Conservation</span>
+                <span class="tech-tag">Climate Change</span>
+                <span class="tech-tag">Rwanda</span>
+              </div>
+            </li>
+            <li class="project-item">
+              <h3 class="project-title">KWITA IZINA Conservation Conference (September 2018)</h3>
+              <p class="project-desc">
+                Theme: "Advancing conservation with technology" | Place: KCVE (Kigali Conference and Exhibition Village)
+              </p>
+              <div class="tech-tags">
+                <span class="tech-tag">Conservation Technology</span>
+                <span class="tech-tag">Rwanda</span>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <section id="contact" style="--order: 8;">
+        <h2>Connect With Me</h2>
+        <div class="card" style="text-align: center;">
+          <p style="margin-bottom: 1rem; font-size: 1.1rem; line-height: 1.9; max-width: 600px; margin-left: auto; margin-right: auto;">
+            Interested in geospatial research, environmental sustainability, or academic collaboration?<br>
+            Reach out through any of these channels:
+          </p>
+          <div style="margin-bottom: 2rem; color: var(--gray); font-size: 1rem; line-height: 2;">
+            <p><i class="fas fa-map-marker-alt" style="color: var(--accent); margin-right: 0.5rem;"></i>Kigarama-Kicukiro, Kigali, Rwanda (KRG 0091)</p>
+            <p><i class="fas fa-phone" style="color: var(--accent); margin-right: 0.5rem;"></i>+250 783 369 815</p>
+            <p><i class="fas fa-envelope" style="color: var(--accent); margin-right: 0.5rem;"></i>patientestime001@gmail.com</p>
+            <p><i class="fab fa-twitter" style="color: var(--accent); margin-right: 0.5rem;"></i>@MindjePatient</p>
+          </div>
+          <div class="social-links">
+            <a href="mailto:patientestime001@gmail.com" class="social-link" title="Email">
+              <i class="fas fa-envelope"></i>
+            </a>
+            <a href="https://twitter.com/MindjePatient" target="_blank" class="social-link" title="Twitter">
+              <i class="fab fa-twitter"></i>
+            </a>
+            <a href="tel:+250783369815" class="social-link" title="Phone">
+              <i class="fas fa-phone"></i>
+            </a>
+          </div>
+
+          <!-- References -->
+          <div style="margin-top: 3rem; text-align: left;">
+            <h3 style="color: var(--accent); margin-bottom: 1.5rem; font-weight: 500; font-size: 1.2rem;">
+              <i class="fas fa-address-book" style="margin-right: 0.5rem;"></i>References
+            </h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
+              <div style="background: rgba(26, 51, 40, 0.55); border-radius: 12px; padding: 1.5rem; border: 1px solid rgba(45, 125, 89, 0.22);">
+                <h4 style="color: var(--light); margin-bottom: 0.5rem;">Michelle DeFreese</h4>
+                <p style="color: var(--gray); font-size: 0.95rem; margin-bottom: 0.3rem;">Project Manager, Pacific Community (SPC)</p>
+                <p style="color: var(--gray); font-size: 0.9rem;"><i class="fas fa-envelope" style="color: var(--accent); margin-right: 0.4rem;"></i>defreese.michelle@gmail.com</p>
+              </div>
+              <div style="background: rgba(26, 51, 40, 0.55); border-radius: 12px; padding: 1.5rem; border: 1px solid rgba(45, 125, 89, 0.22);">
+                <h4 style="color: var(--light); margin-bottom: 0.5rem;">Dr. Zhi Li</h4>
+                <p style="color: var(--gray); font-size: 0.95rem; margin-bottom: 0.5rem;">Professor, Chinese Academy of Sciences — Xinjiang Institute of Ecology and Geography</p>
+                <p style="color: var(--gray); font-size: 0.9rem;"><i class="fas fa-phone" style="color: var(--accent); margin-right: 0.4rem;"></i>+86 139 9940 0930</p>
+                <p style="color: var(--gray); font-size: 0.9rem;"><i class="fas fa-envelope" style="color: var(--accent); margin-right: 0.4rem;"></i>liz@ms.xjb.ac.cn</p>
+              </div>
+              <div style="background: rgba(26, 51, 40, 0.55); border-radius: 12px; padding: 1.5rem; border: 1px solid rgba(45, 125, 89, 0.22);">
+                <h4 style="color: var(--light); margin-bottom: 0.5rem;">MUPENZI Christophe</h4>
+                <p style="color: var(--gray); font-size: 0.95rem; margin-bottom: 0.5rem;">Dean of Faculty of Environmental Studies — UNILAK</p>
+                <p style="color: var(--gray); font-size: 0.9rem;"><i class="fas fa-phone" style="color: var(--accent); margin-right: 0.4rem;"></i>+250 788 666 156</p>
+                <p style="color: var(--gray); font-size: 0.9rem;"><i class="fas fa-envelope" style="color: var(--accent); margin-right: 0.4rem;"></i>mupenzic@gmail.com</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Contact Form -->
+          <form action="https://formspree.io/f/your-form-id" method="POST" id="contactForm" style="margin-top: 3rem; text-align: left;">
+            <div style="margin-bottom: 1.5rem;">
+              <label for="name" style="display: block; margin-bottom: 0.5rem; color: var(--gray);">Your Name</label>
+              <input type="text" id="name" name="name" required style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid rgba(45, 125, 89, 0.3); background: rgba(26, 51, 40, 0.5); color: var(--light);">
+            </div>
+            <div style="margin-bottom: 1.5rem;">
+              <label for="email" style="display: block; margin-bottom: 0.5rem; color: var(--gray);">Your Email</label>
+              <input type="email" id="email" name="email" required style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid rgba(45, 125, 89, 0.3); background: rgba(26, 51, 40, 0.5); color: var(--light);">
+            </div>
+            <div style="margin-bottom: 1.5rem;">
+              <label for="message" style="display: block; margin-bottom: 0.5rem; color: var(--gray);">Your Message</label>
+              <textarea id="message" name="message" rows="5" required style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid rgba(45, 125, 89, 0.3); background: rgba(26, 51, 40, 0.5); color: var(--light);"></textarea>
+            </div>
+            <div style="text-align: center;">
+              <button type="submit" style="background: linear-gradient(45deg, var(--primary), var(--secondary)); color: white; border: none; padding: 0.8rem 1.8rem; border-radius: 30px; font-weight: 500; cursor: pointer; transition: all 0.3s ease;">
+                Send Message
+              </button>
+            </div>
+          </form>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <p>&copy; <span id="year"></span> MINDJE KAYUMBA PATIENT, PhD. All rights reserved.</p>
+      <p class="footer-accent">Geospatial Science. Environmental Sustainability. Research Excellence.</p>
+    </footer>
+  </div>
+
+  <!-- Back to Top Button -->
+  <div class="back-to-top" id="backToTop">
+    <i class="fas fa-arrow-up"></i>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Set current year
+      document.getElementById('year').textContent = new Date().getFullYear();
+      
+      // Mobile menu toggle
+      const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+      const navLinks = document.getElementById('navLinks');
+      
+      mobileMenuBtn.addEventListener('click', () => {
+        navLinks.classList.toggle('active');
+        mobileMenuBtn.innerHTML = navLinks.classList.contains('active') ? 
+          '<i class="fas fa-times"></i>' : '<i class="fas fa-bars"></i>';
+      });
+      
+      // Close mobile menu when clicking a link
+      document.querySelectorAll('.nav-links a').forEach(link => {
+        link.addEventListener('click', () => {
+          navLinks.classList.remove('active');
+          mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+        });
+      });
+      
+      // Smooth scrolling for anchor links
+      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+          e.preventDefault();
+          
+          const targetId = this.getAttribute('href');
+          if (targetId === '#') return;
+          
+          const targetElement = document.querySelector(targetId);
+          if (targetElement) {
+            window.scrollTo({
+              top: targetElement.offsetTop - 80,
+              behavior: 'smooth'
+            });
+          }
+        });
+      });
+      
+      // Back to top button
+      const backToTopBtn = document.getElementById('backToTop');
+      
+      window.addEventListener('scroll', () => {
+        if (window.pageYOffset > 300) {
+          backToTopBtn.classList.add('visible');
+        } else {
+          backToTopBtn.classList.remove('visible');
+        }
+      });
+      
+      backToTopBtn.addEventListener('click', () => {
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        });
+      });
+      
+      // Animate sections on scroll
+      const animateOnScroll = () => {
+        const sections = document.querySelectorAll('section');
+        const windowHeight = window.innerHeight;
+        
+        sections.forEach(section => {
+          const sectionPos = section.getBoundingClientRect().top;
+          if (sectionPos < windowHeight * 0.75) {
+            section.style.opacity = '1';
+          }
+        });
+      };
+      
+      window.addEventListener('scroll', animateOnScroll);
+      animateOnScroll(); // Run once on load
+      
+      // Research card rows animate via CSS animation-delay
+      
+      // Form submission
+      const contactForm = document.getElementById('contactForm');
+      if (contactForm) {
+        contactForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+          
+          // Get form values
+          const name = document.getElementById('name').value;
+          const email = document.getElementById('email').value;
+          const message = document.getElementById('message').value;
+          
+          // Here you would typically send the form data to a server
+          // For demonstration, we'll just show an alert
+          alert(`Thank you, ${name}! Your message has been sent. I'll get back to you soon at ${email}.`);
+          
+          // Reset the form
+          contactForm.reset();
+        });
+      }
+    });
+  </script>
+</body>
+</html>
