@@ -818,6 +818,29 @@
         display: block;
       }
     }
+    /* Print / PDF Styles */
+    @media print {
+      body {
+        background: #fff !important;
+        color: #111 !important;
+        padding-top: 0 !important;
+        font-family: 'Space Grotesk', sans-serif;
+      }
+      nav, .back-to-top, .code-background, .cv-download,
+      #contact form, .social-links { display: none !important; }
+      .card {
+        background: #fff !important;
+        border: 1px solid #ccc !important;
+        box-shadow: none !important;
+        page-break-inside: avoid;
+      }
+      h1, h2 { color: #1a3328 !important; -webkit-text-fill-color: #1a3328 !important; }
+      .title, p, li, .project-desc, .education-desc,
+      .education-institution, .education-period,
+      .research-value, .research-label { color: #333 !important; }
+      .accent, .tech-tag { color: #2d7d59 !important; background: #e8f5ee !important; }
+      .skills-list li { background: #f4faf7 !important; }
+    }
   </style>
 </head>
 <body>
@@ -941,8 +964,8 @@
             <div class="education-institution">Groupe Scolaire Consulaire Congolais, Kigali, Rwanda</div>
             <div class="education-period">2011 – 2014</div>
           </div>
-          <a href="#" class="cv-download" style="margin-top: 1.5rem; display: inline-block;">
-            <i class="fas fa-download"></i> Download My CV
+          <a href="#" class="cv-download" style="margin-top: 1.5rem; display: inline-block;" onclick="event.preventDefault(); window.print();">
+            <i class="fas fa-download"></i> Download / Print CV
           </a>
         </div>
       </section>
